@@ -1,9 +1,9 @@
 // INITIALIZE CURRENT DAY AND ROW BACKGROUNDS
-var currentHour = moment().format("HH");
+var currentHour = parseInt(moment().format("HH"));
 
 $('#currentDay').text(moment().format("dddd, MMMM Do"));
 for (var i=9; i<17; i++) {
-    var currentRow = parseInt($('#schedule').children().eq(0).children().first().attr('data-hour'));
+    var currentRow = parseInt($('#schedule').children().eq(i-9).children().first().attr('data-hour'));
     if (currentHour > currentRow) {
         $('#schedule').children().eq(i-9).addClass('table-success')
     } else if (currentHour < currentRow) {
@@ -31,14 +31,15 @@ var dateUpdate = setInterval(function() {
 }, 1000);
 
 // UPDATE ROW BACKGROUND DEPENDING ON PAST/PRESENT/FUTURE
-// Past: Bootstrap class "table-success"
-// Present: Bootstrap class "table-info"
-// Future: Bootstrap class "table-warning"
+// Past: Bootstrap class "table-success" (green)
+// Present: Bootstrap class "table-info" (blue)
+// Future: Bootstrap class "table-warning" (yellow)
 var colorUpdate = setInterval( function() {
     // check every second bc why not
-    
+
     for (var i=9; i<17; i++) {
-        var currentRow = parseInt($('#schedule').children().eq(0).children().first().attr('data-hour'));
+        var currentRow = parseInt($('#schedule').children().eq(i-9).children().first().attr('data-hour'));
+
         if (currentHour > currentRow) {
             $('#schedule').children().eq(i-9).addClass('table-success')
         } else if (currentHour < currentRow) {
@@ -80,5 +81,32 @@ $('#btn-15').on('click', function () {
 });
 $('#btn-16').on('click', function () {
     eventItemsArray[7] = $('#text8').val();
+    localStorage.setItem('eventItemsStorage', JSON.stringify(eventItemsArray));
+});
+
+
+$('#saveAllBtn').on('click', function () {
+    // save all...
+    eventItemsArray[0] = $('#text1').val();
+    eventItemsArray[1] = $('#text2').val();
+    eventItemsArray[2] = $('#text3').val();
+    eventItemsArray[3] = $('#text4').val();
+    eventItemsArray[4] = $('#text5').val();
+    eventItemsArray[5] = $('#text6').val();
+    eventItemsArray[6] = $('#text7').val();
+    eventItemsArray[7] = $('#text8').val();
+
+    localStorage.setItem('eventItemsStorage', JSON.stringify(eventItemsArray));
+});
+
+$('#clearAllBtn').on('click', function () {
+    // reset 
+    eventItemsArray = ['','','','','','','',''];
+
+    for (var i=0; i<8; i++) {
+        $('#schedule').children().eq(i).children().eq(1).children().first().val(eventItemsArray[i]);
+    }
+
+    // it might be better just to delete the local storage item
     localStorage.setItem('eventItemsStorage', JSON.stringify(eventItemsArray));
 });
